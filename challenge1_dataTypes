@@ -1,0 +1,12 @@
+Challenge
+1)
+24*365
+60*24*365*10
+60*60*24*365*27
+3)
+name = "Bo"
+"Hello #{name}"
+siblings = 1
+"Total siblings = #{siblings}"
+siblings++
+"Total siblings = #{siblings}"
