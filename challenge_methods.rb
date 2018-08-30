@@ -4,6 +4,7 @@ def say(str)
 end
 
 def add(*numbers)
+    # numbers.sum
     puts "I'm about to sum the array #{numbers.inspect}"
     total = numbers.inject(0) { |sum, x| sum += x } #https://www.safaribooksonline.com/library/view/ruby-cookbook/0596523696/ch08s11.html
     return total

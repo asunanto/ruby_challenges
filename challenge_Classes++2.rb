@@ -1,34 +1,34 @@
 require 'json'
 class BankAccount
     attr_accessor :balance
-    @@balance = 0
+    @balance = 0
     #@@history = []
     def initialize(user, password, balance)
         @user = user
         @password = password
-        @@balance = balance
+        @balance = balance
     end
 
     def withdraw(cash)
-        if (cash <= @@balance)
-            @@balance -= cash
+        if (cash <= @balance)
+            @balance -= cash
             #@@history.push(@@balance)
-            puts "You have withdrawn $#{cash}, your balance is now $#{@@balance}."
-            return @@balance
+            puts "You have withdrawn $#{cash}, your balance is now $#{@balance}."
+            return @balance
         else
             puts "Can't withdraw more than balance"
         end
     end
 
     def deposit(cash)
-        @@balance += cash
+        @balance += cash
        # @@history.push(@@balance)
-        puts "You have deposited $#{cash}, your balance is now $#{@@balance}."
-        return @@balance
+        puts "You have deposited $#{cash}, your balance is now $#{@balance}."
+        return @balance
     end
 
     def print_balance
-        puts "Your balance is: #{@@balance}"
+        puts "Your balance is: #{@balance}"
     end
 
 end
@@ -39,29 +39,41 @@ rescue Errno::ENOENT => e
     user_hash = {}
 end
 
-
-def signup(userhash,user,pass)
-    if userhash.has_key?(:"#{user} #{pass}")  #https://www.shortcutfoo.com/app/dojos/ruby-hashes/cheatsheet
-        puts "username and password have already existed."
-        return false
-    else
-        userhash[:"#{user} #{pass}"] = {}
-        userhash[:"#{user} #{pass}"][:history] = []
-        balance = 0
-        puts "new Account created!"
-        return true
+class User
+    def initialize(userhash, user, pass)
+        @userhash = userhash
+        @user = user
+        @pass = pass
     end
+
+    def signup
+        if  @userhash.has_key?(:"#{@user} #{@pass}")  #https://www.shortcutfoo.com/app/dojos/ruby-hashes/cheatsheet
+            puts "username and password have already existed."
+            return false
+        else
+            @userhash[:"#{@user} #{@pass}"] = {}
+            @userhash[:"#{@user} #{@pass}"][:history] = []
+            balance = 0
+            puts "new Account created!"
+            return @user_hash
+        end
+    end
+    
+    def login
+        if @userhash.has_key?(:"#{@user} #{@pass}")
+            puts "login Successful!"
+            return @user_hash
+        else
+            puts "incorrect user and password"
+            return false
+        end
+    end
+
+
 end
 
-def login(userhash,user,pass)
-    if userhash.has_key?(:"#{user} #{pass}")
-        puts "login Successful!"
-        return true
-    else
-        puts "incorrect user and password"
-        return false
-    end
-end
+
+
 
  
 # bank_account.print_balance
@@ -84,7 +96,8 @@ while(1)
             user = (gets.chomp).delete(' ')
             puts "please enter Password"
             password = (gets.chomp).delete(' ')
-            if signup(user_hash,user,password) #sign up success
+            new_user = User.new(user_hash,user,password)
+            if  (new_user.signup != false) #sign up success
                 bank_account = BankAccount.new(user,password,0)
                 history = user_hash[:"#{user} #{password}"][:history] = [0] 
                 File.write('balance.json', JSON.dump(user_hash))
@@ -96,7 +109,8 @@ while(1)
             user = (gets.chomp).delete(' ')
             puts "please enter Password"
             password = (gets.chomp).delete(' ')
-            if login(user_hash,user,password) #login success
+            exist_user = User.new(user_hash,user,password)
+            if  (exist_user.login != false) #login success
                 history = user_hash[:"#{user} #{password}"][:history]
                 balance = history.last
                 balance = balance.to_i
@@ -143,3 +157,5 @@ while(1)
 end
 
 
+
+    
